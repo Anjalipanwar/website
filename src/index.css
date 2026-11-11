@@ -1,0 +1,488 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/bricolage-grotesque/standard.css';
+@import '@fontsource/reenie-beanie/400.css';
+@import 'lenis/dist/lenis.css';
+
+/* ------------------------------------------------------------------ */
+/* Design tokens → Tailwind theme (see DESIGN.md)                      */
+/* To change a colour or a font, change it here.                       */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-paper: #f3f4f1;
+  --color-sheet: #fcfcfa;
+  --color-ink: #1c1b3a;
+  --color-biro: #3346ff;
+  --color-marker: #ff4f8b;
+  --color-highlighter: #ffe45c;
+  --color-check: #1fa971;
+
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-hand: 'Reenie Beanie', 'Bradley Hand', 'Segoe Print', cursive;
+
+  --ease-pen: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Horizontal journey: desktop, tall enough, motion allowed. */
+@custom-variant hz (@media (min-width: 1024px) and (min-height: 620px) and (prefers-reduced-motion: no-preference));
+
+/* `--p` is how far a mark is drawn (0 → 1). Defaults to fully drawn. */
+@property --p {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+:root {
+  --pad: clamp(1.25rem, 4vw, 3.5rem);
+  --gutter: clamp(1.5rem, 3vw, 3rem);
+  --section: clamp(5rem, 11vw, 10rem);
+  /* x-position where the main column's content starts */
+  --main-x: var(--pad);
+}
+@media (min-width: 1024px) {
+  :root {
+    --main-x: calc(var(--pad) + (100vw - 2 * var(--pad)) * 0.22 + var(--gutter));
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+    scroll-padding-top: 1rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    font-size: 1.125rem;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    overflow-x: clip;
+  }
+  @media (min-width: 1024px) {
+    body {
+      font-size: 1.25rem;
+    }
+  }
+  ::selection {
+    background: var(--color-highlighter);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-biro);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+  [data-ink='paper'] :focus-visible {
+    outline-color: var(--color-highlighter);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* ---------------- type ---------------- */
+  .loud {
+    font-stretch: 75%;
+    font-weight: 800;
+    letter-spacing: -0.012em;
+  }
+  .t-hero {
+    font-size: clamp(2.9rem, 13.2vw, 5rem);
+    line-height: 0.9;
+  }
+  @media (min-width: 1024px) {
+    .t-hero {
+      font-size: clamp(5rem, 10vw, 12.5rem);
+    }
+  }
+  .t-display {
+    font-size: clamp(2.6rem, 7vw, 6rem);
+    line-height: 0.92;
+  }
+  .t-giant {
+    font-size: clamp(3.6rem, 23.5vw, 9rem);
+    line-height: 0.84;
+  }
+  @media (min-width: 1024px) {
+    .t-giant {
+      font-size: clamp(9rem, 19vw, 22rem);
+    }
+  }
+  .t-row {
+    font-size: clamp(1.6rem, 3.7vw, 3.4rem);
+    line-height: 1.05;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .t-lead {
+    font-size: clamp(1.25rem, 1.7vw, 1.6rem);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+  }
+  .hand {
+    font-family: var(--font-hand);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  /* ---------------- page frame: margin | main ---------------- */
+  .frame {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: var(--pad);
+  }
+  .frame-margin {
+    min-width: 0;
+  }
+  .frame-main {
+    min-width: 0;
+  }
+  @media (min-width: 1024px) {
+    .frame {
+      grid-template-columns: 22% minmax(0, 1fr);
+    }
+    .frame-margin {
+      padding-right: 1.5rem;
+    }
+    .frame-main {
+      padding-left: var(--gutter);
+      border-left: 1px solid color-mix(in srgb, var(--color-marker) 34%, transparent);
+    }
+    [data-ink='paper'] .frame-main {
+      border-left-color: color-mix(in srgb, var(--color-paper) 30%, transparent);
+    }
+    [data-ink='yellow'] .frame-main {
+      border-left-color: color-mix(in srgb, var(--color-ink) 22%, transparent);
+    }
+  }
+
+  /* ---------------- annotation layer ---------------- */
+  .mark-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .mark-wrap--isolate {
+    isolation: isolate;
+  }
+  .mark-box {
+    position: relative;
+    display: inline-block;
+    flex: none;
+  }
+  .mark {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .mark--behind {
+    z-index: -1;
+  }
+  .mark path {
+    fill: none;
+    stroke: currentColor;
+    stroke-linejoin: round;
+    /* this stroke's own progress within the mark */
+    --q: clamp(0, calc((var(--p) - var(--s, 0)) / var(--d, 1)), 1);
+    stroke-dasharray: 1.001 2;
+    stroke-dashoffset: calc(1.001 * (1 - var(--q)));
+    opacity: clamp(0, calc(var(--q) * 400), 1);
+  }
+  .note {
+    display: inline-block;
+    font-family: var(--font-hand);
+    font-size: clamp(1.8rem, 1.2rem + 0.9vw, 2.3rem);
+    line-height: 0.95;
+    letter-spacing: 0;
+    rotate: var(--tilt, -2deg);
+    clip-path: inset(-40% calc((1 - var(--p)) * 112% - 12%) -40% -12%);
+  }
+
+  /* ---------------- hero ---------------- */
+  .hero-line {
+    display: block;
+  }
+  .hero-mask,
+  .hero-inner {
+    display: block;
+  }
+  .hero-tail {
+    display: block;
+    font-size: 1.2rem;
+    line-height: 1.3;
+    font-stretch: 100%;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    padding: 0.35rem 0 0.9rem 0.15rem;
+  }
+  .hero-check {
+    width: 0.78em;
+    height: 0.8em;
+    margin-left: 0.1em;
+    translate: 0 -0.08em;
+  }
+  @media (min-width: 1024px) {
+    .hero-line + .hero-line {
+      margin-top: 0.06em;
+    }
+    .hero-tail {
+      display: inline;
+      font-size: clamp(1.25rem, 1.75vw, 2rem);
+      padding: 0;
+      margin-left: 0.5em;
+    }
+  }
+
+  /* ---------------- buttons ---------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3.25rem;
+    padding: 0.7rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-radius: 3px;
+    transition: background-color 0.25s var(--ease-pen);
+  }
+  .btn:hover {
+    background: var(--color-biro);
+  }
+  .link-mark {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3.25rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+  }
+  .link-mark .mark {
+    transition: color 0.2s;
+  }
+  .link-mark:hover .mark {
+    color: var(--color-biro) !important;
+  }
+  /* hovering a marked link redraws its mark */
+  .redraw:hover .mark path {
+    animation: redraw 0.55s var(--ease-pen);
+  }
+  @keyframes redraw {
+    from {
+      stroke-dashoffset: 1.001;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* ---------------- journey ---------------- */
+  .t-year {
+    font-size: clamp(4.5rem, 20vw, 7rem);
+    line-height: 0.85;
+  }
+  @media (min-width: 1024px) {
+    .t-year {
+      font-size: clamp(6rem, 9.5vw, 10.5rem);
+    }
+  }
+  .journey-backdrop {
+    font-size: 34vw;
+    line-height: 0.8;
+    color: color-mix(in srgb, var(--color-ink) 5.5%, transparent);
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* ---------------- capabilities ---------------- */
+  .cap {
+    border-top: 1px solid color-mix(in srgb, var(--color-ink) 16%, transparent);
+  }
+  .cap:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 16%, transparent);
+  }
+  .cap .t-row {
+    transition: opacity 0.3s;
+  }
+  .caps:has(.cap[data-open='true']) .cap:not([data-open='true']) .t-row {
+    opacity: 0.45;
+  }
+  .cap .mark {
+    --p: 0;
+    transition: --p 0.5s var(--ease-pen);
+  }
+  .cap[data-open='true'] .mark {
+    --p: 1;
+  }
+  .cap-proof {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    clip-path: inset(0 100% 0 0);
+    transition:
+      grid-template-rows 0.35s var(--ease-pen),
+      clip-path 0.5s var(--ease-pen),
+      visibility 0s 0.5s;
+  }
+  .cap-proof > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .cap[data-open='true'] .cap-proof {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    clip-path: inset(0 0 0 0);
+    transition:
+      grid-template-rows 0.35s var(--ease-pen),
+      clip-path 0.5s var(--ease-pen) 0.1s,
+      visibility 0s;
+  }
+  @media (min-width: 1024px) {
+    /* space is reserved on desktop so hovering down the list never shifts rows */
+    .cap-proof {
+      grid-template-rows: 1fr;
+    }
+  }
+
+  /* ---------------- work: sheets of paper ---------------- */
+  .sheet {
+    margin-bottom: 2.5rem;
+  }
+  .sheet-paper {
+    background: var(--color-sheet);
+    border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--color-ink) 8%, transparent),
+      0 22px 36px -26px color-mix(in srgb, var(--color-ink) 45%, transparent);
+    rotate: var(--rot, 0deg);
+    transform-origin: 50% 0;
+  }
+  @media (min-width: 768px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+    .sheet {
+      position: sticky;
+      top: calc(4.5rem + var(--i) * 1.1rem);
+      margin-bottom: 16vh;
+    }
+    .sheet:last-child {
+      margin-bottom: 0;
+    }
+    .sheet-paper {
+      min-height: min(54vh, 30rem);
+    }
+  }
+
+  /* ---------------- beyond: collage ---------------- */
+  .sticker {
+    display: inline-block;
+    padding: 0.08em 0.3em 0.12em;
+    font-size: clamp(2.6rem, 7vw, 5.5rem);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .collage > * {
+    rotate: var(--rot, 0deg);
+    transition: rotate 0.4s var(--ease-pen);
+  }
+  @media (min-width: 1024px) {
+    .collage > * {
+      translate: var(--dx, 0) var(--dy, 0);
+    }
+  }
+  @media (hover: hover) {
+    .collage > *:hover {
+      rotate: 0deg;
+    }
+  }
+
+  /* ---------------- contact ---------------- */
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3.5rem;
+    padding: 0.5rem 0.25rem;
+    font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-paper);
+    transition: color 0.2s;
+  }
+  .contact-btn:hover {
+    color: var(--color-highlighter);
+  }
+
+  /* ---------------- cursor ---------------- */
+  .cursor {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .cursor[data-visible='true'] {
+    opacity: 1;
+  }
+  .cursor-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    margin: -5px 0 0 -5px;
+    border-radius: 50%;
+    background: var(--color-ink);
+    border: 1.5px solid var(--color-ink);
+    transition:
+      width 0.28s var(--ease-pen),
+      height 0.28s var(--ease-pen),
+      margin 0.28s var(--ease-pen),
+      background-color 0.2s,
+      border-color 0.2s;
+  }
+  .cursor[data-active='true'] .cursor-dot {
+    width: 46px;
+    height: 46px;
+    margin: -23px 0 0 -23px;
+    background: transparent;
+  }
+  .cursor[data-on='paper'] .cursor-dot {
+    border-color: var(--color-paper);
+    background: var(--color-paper);
+  }
+  .cursor[data-on='paper'][data-active='true'] .cursor-dot {
+    background: transparent;
+  }
+  html.has-cursor,
+  html.has-cursor * {
+    cursor: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
