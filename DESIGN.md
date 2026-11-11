@@ -50,13 +50,13 @@ Two voices from one family, made with the width axis:
 
 | Token      | Size                                   | Line height |
 | ---------- | -------------------------------------- | ----------- |
-| `hero`     | `clamp(2.9rem, 13.2vw, 5rem)` → `clamp(5rem, 10vw, 12.5rem)` ≥1024 | 0.9 |
+| `hero`     | `clamp(2.9rem, 13.2vw, 5rem)` → `clamp(4.25rem, min(10vw, 15.5svh), 12.5rem)` ≥1024 | 0.9 |
 | `display`  | `clamp(2.6rem, 7vw, 6rem)`             | 0.92        |
 | `giant`    | `clamp(3.6rem, 23.5vw, 9rem)` → `clamp(9rem, 19vw, 22rem)` ≥1024 (contact) | 0.84 |
-| `row`      | `clamp(1.6rem, 3.7vw, 3.4rem)`         | 1.05        |
+| `row`      | `clamp(2.5rem, 6.4vw, 6.5rem)` (Loud)  | 0.95        |
 | `lead`     | `clamp(1.25rem, 1.7vw, 1.6rem)`        | 1.35        |
 | `body`     | `1.125rem` → `1.25rem` ≥1024           | 1.5         |
-| `hand`     | `clamp(1.8rem, 1.2rem + 0.9vw, 2.3rem)` (never below 1.5rem) | 0.95 |
+| `hand`     | `clamp(2.25rem, 1.6rem + 1.3vw, 3.2rem)` (never below 1.9rem), with a 0.45px stroke for weight | 0.9 |
 
 Line length is capped at 62ch for body text.
 
@@ -70,7 +70,7 @@ A printed page with a wide margin.
 - <1024px: single column. Margin notes become small rotated notes inline, next to what they annotate.
 - Left-aligned everywhere. Nothing is centred.
 - Things that break the grid on purpose: the journey track (runs full-bleed and
-  off the right edge), the giant backdrop word, the contact headline.
+  off the right edge) and the contact headline.
 
 ## Annotation system (`src/components/annotations/`)
 
@@ -123,8 +123,7 @@ A printed page with a wide margin.
 3. **Section labels: none.** No eyebrows, no numbering. Where a section needs a
    second voice, the reviewer says it in the margin.
 4. **Timeline years** are placeholders, so they are set as blanks to fill in (`20__`), like a form — not invented dates.
-5. **Capability rows: no accordion jump.** The proof line's space is reserved on
-   desktop so hovering down the list never shifts the rows under the cursor.
+5. **Capability rows are not cards or a hover list.** Big type rows, one open at a time, with the reviewer's tick on the open one (see the refinement pass below).
 6. **Contact buttons are not pills.** They are words the reviewer has circled; hovering redraws the circle.
 7. **Optical-size axis:** the brief asked for width *and* optical size. Fontsource
    ships them as separate files (no single file has both), and loading two
@@ -141,3 +140,15 @@ A printed page with a wide margin.
 
 Lighthouse, mobile emulation, production build: Performance 93–96, Accessibility 100,
 Best Practices 100, SEO 100. CLS 0, LCP 0.8s.
+
+## Refinement pass
+
+- **Hero:** each line is a baseline-aligned row: big word, then its qualifier at one size and one gap. The check now follows "by nature." so it no longer pushes that qualifier out. Type is sized against viewport height as well as width, so the hero fits one screen at 1280×720 and 1440×900. The corner sketch is gone; "Currently …" sits beside the buttons.
+- **Handwriting:** about 40% larger, with a hairline stroke so the thin face carries the weight of a pen. Colour pairs are unchanged and pass AA (Biro Blue on Paper 5.5:1, Highlighter on Biro Blue 4.8:1, Ink on Highlighter 12.7:1).
+- **Margin notes** sit beside what they point at, with an arrow that crosses the margin line (`MarginAside`). On small screens each note is inline.
+- **What I bring:** rows are in the Loud voice at roughly twice the size. One row is open at a time, the first by default; click, tap, Enter or Space toggles. The right edge carries the state: a plus when closed, the reviewer's tick when open. Hover no longer opens rows.
+- **Beyond work:** a tighter collage (smaller photo slots, stickers overlapping their neighbours), about one viewport on desktop.
+- **Yellow → blue:** the yellow section ends in three highlighter passes with slanted ends, running out over the blue.
+- **Journey:** the grey backdrop word is removed.
+- **Spacing:** section padding reduced by 30% (`--section`), plus tighter gaps around Selected work and above the footer.
+- **Cursor:** white with `mix-blend-mode: difference`, so it reads on paper, on text, on yellow and on blue.

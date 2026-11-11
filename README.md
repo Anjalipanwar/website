@@ -61,7 +61,7 @@ The status picks the mark: green check, blue squiggle, or pink cross (killed ent
 ### Timeline, capabilities, photos
 
 - **Timeline:** `journey.stops`. Replace `20__` with real years. Add `note: '…'` to a stop for a handwritten note.
-- **Capabilities:** `capabilities.items`, each with a `name` and a one-line `proof`.
+- **Capabilities:** `capabilities.items`, each with a `name` and a one-line `proof`. The first row starts open.
 - **Photos:** put files in `public/photos/`, then set `src: '/photos/name.jpg'` and a real `alt` on a `photo` item in `beyond.items`. Until then the slot shows a sketch.
 
 ## Colours and fonts

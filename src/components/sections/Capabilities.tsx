@@ -1,30 +1,31 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { capabilities } from '../../content';
-import { Highlight, MarginNote } from '../annotations';
+import { Check, Cross, Highlight, MarginNote } from '../annotations';
+import { MarginAside } from '../MarginAside';
 
 export function Capabilities() {
-  const [open, setOpen] = useState<number | null>(null);
-  const viaMouse = useRef(false);
+  // one row open at a time; the first is open to start with
+  const [open, setOpen] = useState<number | null>(0);
 
   return (
     <section id="capabilities" aria-labelledby="capabilities-title" className="py-[var(--section)]">
       <div className="frame">
-        <div className="frame-margin">
-          <MarginNote seed={81} rotate={-3} className="hidden max-w-[11rem] lg:mt-3 lg:inline-block">
-            {capabilities.marginNote}
-          </MarginNote>
-        </div>
+        <div className="frame-margin" />
         <div className="frame-main">
           <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
             <h2 id="capabilities-title" className="loud t-display">
               {capabilities.title}
             </h2>
             <MarginNote seed={82} rotate={-3} className="lg:hidden">
-              {capabilities.marginNoteTouch}
+              {capabilities.marginNote}
             </MarginNote>
           </div>
 
-          <ul className="caps mt-10 lg:mt-14">
+          <div className="relative mt-8 lg:mt-10">
+            <MarginAside seed={81} className="top-5">
+              {capabilities.marginNote}
+            </MarginAside>
+          <ul className="caps">
             {capabilities.items.map((item, i) => {
               const isOpen = open === i;
               return (
@@ -32,31 +33,33 @@ export function Capabilities() {
                   <h3>
                     <button
                       type="button"
-                      className="block w-full pb-1 pt-4 text-left lg:pt-5"
+                      className="cap-btn grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-4 py-3 text-left lg:py-4"
                       aria-expanded={isOpen}
                       aria-controls={`cap-proof-${i}`}
-                      onPointerEnter={e => e.pointerType === 'mouse' && setOpen(i)}
-                      onPointerDown={e => (viaMouse.current = e.pointerType === 'mouse')}
-                      onClick={() => {
-                        // a mouse has already opened it by hovering; touch and keyboard toggle
-                        setOpen(viaMouse.current ? i : isOpen ? null : i);
-                        viaMouse.current = false;
-                      }}
+                      onClick={() => setOpen(isOpen ? null : i)}
                     >
-                      <Highlight draw="manual" seed={90 + i}>
-                        <span className="t-row block px-[0.12em]">{item.name}</span>
-                      </Highlight>
+                      <span>
+                        <Highlight draw="manual" seed={90 + i}>
+                          <span className="loud t-row block px-[0.08em]">{item.name}</span>
+                        </Highlight>
+                      </span>
+                      {/* closed: a plus. open: the reviewer has ticked it. */}
+                      <span className="cap-state relative block h-[clamp(1.9rem,4.4vw,3.75rem)] w-[clamp(2.1rem,4.8vw,4.1rem)]" aria-hidden="true">
+                        <Cross draw="static" color="ink" seed={400 + i} className="cap-plus absolute inset-[22%] rotate-45" />
+                        <Check draw="manual" color="green" seed={410 + i} className="cap-check absolute inset-0" />
+                      </span>
                     </button>
                   </h3>
                   <div id={`cap-proof-${i}`} className="cap-proof">
                     <div>
-                      <p className="max-w-[62ch] pb-4 pl-[0.2em] lg:pb-5">{item.proof}</p>
+                      <p className="t-lead max-w-[46ch] pb-6 pl-[0.1em] lg:pb-7">{item.proof}</p>
                     </div>
                   </div>
                 </li>
               );
             })}
           </ul>
+          </div>
         </div>
       </div>
     </section>

@@ -2,13 +2,12 @@ import { useRef } from 'react';
 import { hero, nav, site } from '../../content';
 import { gsap, MOTION_OK, useGSAP } from '../../lib/motion';
 import { Arrow, Check, Circle, Highlight, MarginNote, Underline } from '../annotations';
-import { Doodle } from '../annotations/Doodle';
 import { ScrambleWords } from '../ScrambleWords';
 
 export function Nav() {
   return (
     <header className="absolute inset-x-0 top-0 z-10">
-      <nav aria-label="Main" className="frame items-center pt-5 lg:pt-7">
+      <nav aria-label="Main" className="frame items-center pt-5 lg:pt-6">
         <a href="#top" className="justify-self-start py-2 font-semibold tracking-tight">
           {site.name}
         </a>
@@ -40,14 +39,7 @@ function Term({ mark, children }: { mark: (typeof hero.lines)[number]['mark']; c
         {term}
       </Highlight>
     );
-  return (
-    <>
-      {term}
-      <span className="loud t-hero">
-        <Check draw="manual" color="green" seed={5} className="hero-check" />
-      </span>
-    </>
-  );
+  return term;
 }
 
 export function Hero() {
@@ -87,14 +79,20 @@ export function Hero() {
     <section id="top" ref={root} className="relative flex min-h-svh flex-col overflow-x-clip">
       <div className="frame flex-1">
         <div className="frame-margin" />
-        <div className="frame-main relative flex flex-col justify-center pb-10 pt-28 lg:pb-20 lg:pt-32">
+        <div className="frame-main hero-main relative flex flex-col justify-center">
           <div className="relative">
             <h1>
               {hero.lines.map(line => (
                 <span key={line.term} className="hero-line">
                   <span className="hero-mask">
                     <span className="hero-inner">
-                      <Term mark={line.mark}>{line.term}</Term> <span className="hero-tail">{line.tail}</span>
+                      <Term mark={line.mark}>{line.term}</Term>{' '}
+                      <span className="hero-tail">{line.tail}</span>
+                      {line.mark === 'check' && (
+                        <span className="hero-check loud t-hero" aria-hidden="true">
+                          <Check draw="manual" color="green" seed={5} className="h-[0.8em] w-[0.78em]" />
+                        </span>
+                      )}
                     </span>
                   </span>
                 </span>
@@ -102,18 +100,18 @@ export function Hero() {
             </h1>
 
             {/* margin note: in the margin on desktop, an inline sticker on mobile */}
-            <div className="hero-note pointer-events-none absolute right-0 top-[-2.2rem] flex items-start gap-0.5 lg:right-[calc(100%+1.6rem)] lg:top-[1.4vw] lg:gap-1">
-              <Arrow draw="manual" seed={3} from={[0.95, 0.1]} to={[0.1, 0.9]} bend={-0.3} head={10} className="h-10 w-9 translate-y-4 lg:hidden" />
-              <MarginNote draw="manual" seed={21} rotate={-5} className="whitespace-nowrap text-[1.6rem] lg:text-[1.55rem] xl:text-[2.2rem]">
+            <div className="hero-note pointer-events-none absolute right-0 top-[-3rem] flex items-start gap-0.5 lg:right-[calc(100%+1.5rem)] lg:top-[0.1em] lg:gap-1">
+              <Arrow draw="manual" seed={3} from={[0.95, 0.1]} to={[0.1, 0.9]} bend={-0.3} head={10} className="h-10 w-8 translate-y-5 lg:hidden" />
+              <MarginNote draw="manual" seed={21} rotate={-5} className="w-max whitespace-nowrap text-[2rem] lg:max-w-[7rem] lg:whitespace-normal lg:text-right lg:text-[2.3rem] xl:max-w-[12.5rem] xl:text-[2.8rem]">
                 {hero.note}
               </MarginNote>
-              <Arrow draw="manual" seed={4} from={[0.04, 0.3]} to={[0.97, 0.72]} bend={-0.28} className="hidden h-12 w-[3.6vw] lg:inline-block lg:translate-y-3 xl:w-[4.5vw] xl:translate-y-4" />
+              <Arrow draw="manual" seed={4} from={[0.04, 0.3]} to={[0.97, 0.7]} bend={-0.28} className="hidden h-12 w-10 lg:inline-block lg:translate-y-6 xl:w-14 xl:translate-y-8" />
             </div>
           </div>
 
-          <div className="mt-8 lg:mt-10">
-            <p className="t-lead max-w-[34rem]">{hero.intro}</p>
-            <div className="mt-7 flex flex-wrap items-center gap-x-7 gap-y-3">
+          <div className="hero-below">
+            <p className="t-lead max-w-[40rem]">{hero.intro}</p>
+            <div className="mt-6 flex flex-wrap items-center gap-x-7 gap-y-4">
               <a href={hero.actions.primary.href} className="btn">
                 {hero.actions.primary.label}
               </a>
@@ -122,20 +120,13 @@ export function Hero() {
                   {hero.actions.secondary.label}
                 </Underline>
               </a>
+              <p className="basis-full text-[1.0625rem] leading-snug sm:basis-auto sm:border-l sm:border-ink/20 sm:pl-7">
+                {hero.currently.before} <ScrambleWords words={hero.currently.words} className="font-bold text-biro" />
+                <br />
+                {hero.currently.after}
+              </p>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* bottom corner: what she is doing now, and a builder's sketch */}
-      <div className="flex items-end gap-5 px-[var(--pad)] pb-10 lg:absolute lg:bottom-10 lg:right-0 lg:pb-0">
-        <p className="max-w-[19rem] text-[1.0625rem] leading-snug lg:text-right">
-          {hero.currently.before} <ScrambleWords words={hero.currently.words} className="font-bold text-biro" />
-          <br />
-          {hero.currently.after}
-        </p>
-        <div className="pointer-events-none hidden md:block" aria-hidden="true">
-          <Doodle kind="blocks" seed={2} className="block h-24 w-24 lg:h-28 lg:w-28" />
         </div>
       </div>
     </section>

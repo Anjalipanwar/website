@@ -13,7 +13,6 @@ export function Cursor() {
       el.dataset.visible = 'true';
       const t = e.target as Element | null;
       el.dataset.active = String(!!t?.closest?.('a, button, [data-cursor]'));
-      el.dataset.on = t?.closest?.('[data-ink="paper"]') ? 'paper' : 'ink';
     };
     const hide = () => (el.dataset.visible = 'false');
     window.addEventListener('pointermove', move, { passive: true });

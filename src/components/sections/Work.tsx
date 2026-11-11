@@ -2,6 +2,7 @@ import { useRef, type CSSProperties } from 'react';
 import { work } from '../../content';
 import { gsap, useGSAP } from '../../lib/motion';
 import { Arrow, Circle, MarginNote, Underline, type Ink } from '../annotations';
+import { MarginAside } from '../MarginAside';
 
 const STACKED = '(min-width: 768px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)';
 const ROTATIONS = ['-1.1deg', '0.8deg', '-0.5deg', '1deg'];
@@ -32,18 +33,25 @@ export function Work() {
   return (
     <section id="work" ref={root} aria-labelledby="work-title" className="py-[var(--section)]">
       <div className="frame">
-        <div className="frame-margin">
-          <MarginNote seed={101} rotate={-4} className="hidden max-w-[10rem] lg:mt-3 lg:inline-block">
-            {work.marginNote}
-          </MarginNote>
-        </div>
+        <div className="frame-margin" />
         <div className="frame-main">
           <h2 id="work-title" className="loud t-display">
             {work.title}
           </h2>
           <p className="t-lead mt-6 max-w-[38rem]">{work.intro}</p>
 
-          <ol className="mt-12 lg:mt-16">
+          <div className="mt-3 flex items-start justify-end gap-1 lg:hidden">
+            <MarginNote seed={102} rotate={-3}>
+              {work.marginNote}
+            </MarginNote>
+            <Arrow seed={103} from={[0.2, 0.05]} to={[0.6, 0.92]} bend={-0.3} head={10} className="mt-4 h-10 w-8" />
+          </div>
+
+          <div className="relative mt-4 lg:mt-10">
+            <MarginAside seed={101} className="top-10">
+              {work.marginNote}
+            </MarginAside>
+          <ol>
             {work.cases.map((c, i) => {
               const pen = PENS[i % PENS.length];
               return (
@@ -54,7 +62,7 @@ export function Work() {
                   >
                     <header className="flex items-start gap-5 sm:gap-7">
                       <Circle color={pen} seed={110 + i} weight={3} className="mt-1 shrink-0">
-                        <MarginNote color={pen === 'blue' ? 'blue' : 'ink'} rotate={0} seed={i} className="px-3.5 text-[3.4rem] leading-[0.8]">
+                        <MarginNote color={pen === 'blue' ? 'blue' : 'ink'} rotate={0} seed={i} className="px-3.5 text-[4rem] leading-[0.8]">
                           {i + 1}
                         </MarginNote>
                       </Circle>
@@ -95,6 +103,7 @@ export function Work() {
               );
             })}
           </ol>
+          </div>
         </div>
       </div>
     </section>

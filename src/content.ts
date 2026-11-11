@@ -72,8 +72,6 @@ export const journey = {
   intro:
     '[Short intro, two or three sentences: where you started, what kept pulling you toward product, and why you are building your own things now.]',
   marginNote: 'keep scrolling, it goes sideways',
-  /** Giant word behind the timeline. */
-  backdrop: 'journey',
   /**
    * Timeline stops, in order. `year` is set very large: replace the blanks
    * with real years. `note` (optional) adds a handwritten note to that stop.
@@ -98,9 +96,8 @@ export const journey = {
 
 export const capabilities = {
   title: 'What I bring.',
-  marginNote: 'hover one. there is proof.',
-  marginNoteTouch: 'tap one. there is proof.',
-  /** Seven rows. `proof` is the one line that appears on hover / tap. */
+  marginNote: 'open one. there is proof.',
+  /** Seven rows. `proof` is the line that appears when a row is opened. The first row starts open. */
   items: [
     { name: 'Product thinking', proof: '[Proof: a decision you shaped, and what happened because of it.]' },
     { name: 'Quality as a habit', proof: '[Proof: a release you de-risked, and how.]' },
@@ -223,13 +220,13 @@ export const beyond = {
   intro: '[A line or two about who you are when the laptop is closed.]',
   photoPlaceholder: 'photo goes here',
   items: [
-    { kind: 'sticker', text: 'Travel' },
     { kind: 'photo', src: null, alt: '[Describe the photo]', caption: '[Place, year]', doodle: 'plane' },
+    { kind: 'sticker', text: 'Travel' },
     { kind: 'note', heading: 'learning right now', lines: ['[thing one]', '[thing two]', '[thing three]'] },
-    { kind: 'sticker', text: 'Curiosity' },
     { kind: 'photo', src: null, alt: '[Describe the photo]', caption: '[Place, year]', doodle: 'mountain' },
-    { kind: 'sticker', text: 'Always learning' },
+    { kind: 'sticker', text: 'Curiosity' },
     { kind: 'photo', src: null, alt: '[Describe the photo]', caption: '[What this is]', doodle: 'book' },
+    { kind: 'sticker', text: 'Always learning' },
   ] as BeyondItem[],
 };
 
